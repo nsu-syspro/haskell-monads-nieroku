@@ -7,6 +7,7 @@ module Task1 where
 -- Hide built-in bind definition
 
 import Data.Functor.Identity
+import Data.Maybe
 import Prelude hiding ((>>=))
 
 -- * Join monad
@@ -21,31 +22,31 @@ class (Applicative m) => JoinMonad m where
 infixl 1 >>=
 
 (>>=) :: (JoinMonad m) => m a -> (a -> m b) -> m b
-(>>=) = error "TODO: define (>>=) in Task1"
+m >>= f = join (fmap f m)
 
 infixr 1 >=>
 
 (>=>) :: (JoinMonad m) => (a -> m b) -> (b -> m c) -> (a -> m c)
-(>=>) = error "TODO: define (>=>) in Task1"
+f >=> g = join . (fmap g) . f
 
 -- * Instances
 
 instance JoinMonad Identity where
   join :: Identity (Identity a) -> Identity a
-  join = error "TODO: define join (JoinMonad Identity)"
+  join = runIdentity
 
 instance JoinMonad Maybe where
   join :: Maybe (Maybe a) -> Maybe a
-  join = error "TODO: define join (JoinMonad Maybe)"
+  join = fromMaybe Nothing
 
 instance JoinMonad [] where
   join :: [[a]] -> [a]
-  join = error "TODO: define join (JoinMonad [])"
+  join = concat
 
 instance (Monoid e) => JoinMonad ((,) e) where
   join :: (Monoid e) => (e, (e, a)) -> (e, a)
-  join = error "TODO: define join (JoinMonad ((,) e))"
+  join (m1, (m2, a)) = (m1 <> m2, a)
 
 instance JoinMonad ((->) e) where
   join :: (e -> (e -> a)) -> (e -> a)
-  join = error "TODO: define join (JoinMonad ((->) e))"
+  join f e = f e e
