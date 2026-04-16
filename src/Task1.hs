@@ -1,28 +1,31 @@
 {-# OPTIONS_GHC -Wall #-}
+
 -- The above pragma enables all warnings
 
 module Task1 where
 
 -- Hide built-in bind definition
-import Prelude hiding ((>>=))
 
 import Data.Functor.Identity
+import Prelude hiding ((>>=))
 
 -- * Join monad
 
 -- | Monad based on 'join' operation
 -- instead of usual bind operator '(>>=)'.
-class Applicative m => JoinMonad m where
+class (Applicative m) => JoinMonad m where
   join :: m (m a) -> m a
 
 -- * Equivalent views
 
 infixl 1 >>=
-(>>=) :: JoinMonad m => m a -> (a -> m b) -> m b
+
+(>>=) :: (JoinMonad m) => m a -> (a -> m b) -> m b
 (>>=) = error "TODO: define (>>=) in Task1"
 
 infixr 1 >=>
-(>=>) :: JoinMonad m => (a -> m b) -> (b -> m c) -> (a -> m c)
+
+(>=>) :: (JoinMonad m) => (a -> m b) -> (b -> m c) -> (a -> m c)
 (>=>) = error "TODO: define (>=>) in Task1"
 
 -- * Instances
@@ -40,7 +43,7 @@ instance JoinMonad [] where
   join = error "TODO: define join (JoinMonad [])"
 
 instance (Monoid e) => JoinMonad ((,) e) where
-  join :: Monoid e => (e, (e, a)) -> (e, a)
+  join :: (Monoid e) => (e, (e, a)) -> (e, a)
   join = error "TODO: define join (JoinMonad ((,) e))"
 
 instance JoinMonad ((->) e) where

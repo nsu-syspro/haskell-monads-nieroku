@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wall #-}
+
 -- The above pragma enables all warnings
 
 module Task3 where
@@ -8,7 +9,7 @@ import Data.Functor.Identity
 -- * Functor composition
 
 -- | Represents composition of two functors.
-newtype Compose f g a = Compose { getCompose :: f (g a) }
+newtype Compose f g a = Compose {getCompose :: f (g a)}
   deriving (Show, Eq)
 
 instance (Functor f, Functor g) => Functor (Compose f g) where
@@ -36,15 +37,15 @@ class (Monad m, Monad n) => Distrib m n where
 
 -- * Distributive instances
 
-instance Monad n => Distrib Identity n where
-  distrib :: Monad n => Identity (n a) -> n (Identity a)
+instance (Monad n) => Distrib Identity n where
+  distrib :: (Monad n) => Identity (n a) -> n (Identity a)
   distrib = error "TODO: define distrib (Distrib Identity n)"
 
-instance Monad n => Distrib Maybe n where
+instance (Monad n) => Distrib Maybe n where
   distrib :: Maybe (n a) -> n (Maybe a)
   distrib = error "TODO: define distrib (Distrib Maybe n)"
 
-instance Monad n => Distrib [] n where
+instance (Monad n) => Distrib [] n where
   distrib :: [] (n a) -> n ([] a)
   distrib = error "TODO: define distrib (Distrib [] n)"
 
@@ -52,6 +53,6 @@ instance (Monad n, Monoid e) => Distrib ((,) e) n where
   distrib :: (e, n a) -> n (e, a)
   distrib = error "TODO: define distrib (Distrib ((,) e) n)"
 
-instance Monad n => Distrib n ((->) e) where
+instance (Monad n) => Distrib n ((->) e) where
   distrib :: n (e -> a) -> (e -> n a)
   distrib = error "TODO: define distrib (Distrib n ((->) e))"
